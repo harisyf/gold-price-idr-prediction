@@ -19,7 +19,7 @@ Namun, memprediksi harga emas terhadap IDR bukanlah hal yang mudah karena sifatn
 
 ### Problem Statements
 - Sulitnya memprediksi harga emas terhadap Rupiah karena tingginya volatilitas dan pengaruh faktor eksternal seperti kurs USD, inflasi global, dan ketegangan geopolitik.
-- Belum adanya alat bantu berbasis machine learning yang dapat memberikan prediksi harga emas IDR secara real-time dan akurat.
+- Peningkatan permintaan terhadap emas yang menyebabkan kenaikan harga emas secara drastis
 
 ### Goals
 - Membangun model machine learning untuk memprediksi harga emas dalam IDR berdasarkan data historis.
@@ -36,18 +36,47 @@ Namun, memprediksi harga emas terhadap IDR bukanlah hal yang mudah karena sifatn
 Data yang digunakan dalam proyek ini diambil dari [Investing.com - GAU/IDR](https://id.investing.com/currencies/gau-idr-historical-data), mencakup periode 24 April 2023 hingga 22 April 2025. Data ini merepresentasikan harga emas dunia yang dikonversikan ke dalam Rupiah Indonesia (IDR).
 
 Dataset mencakup kolom-kolom berikut (berdasarkan struktur umumnya dari Investing.com):
-- Date: tanggal pengamatan
-- Price: harga emas pada hari tersebut
+- Tanggal: tanggal pengamatan
+- Terakhir: harga terakhir emas pada hari tersebut
 - Open: harga pembukaan
 - High: harga tertinggi dalam sehari
 - Low: harga terendah dalam sehari
 - Change %: persentase perubahan harga
+Namun yang digunakan pada proyek ini yaitu 'Tanggal' dan 'Terakhir'
 
-**Rubrik/Kriteria Tambahan (Opsional)**:
+**Exploratory Data Analysis**:
+**Statistika Deskriptif**
+### 📊 Descriptive Statistics for Closing Gold Price (IDR)
+
+| Metric           | Value           |
+|------------------|-----------------|
+| Count            | 527             |
+| Mean             | 1,178,196       |
+| Std Dev          | 217,310         |
+| Min              | 912,144         |
+| Q1 (25%)         | 975,623         |
+| Median (50%)     | 1,201,496       |
+| Q3 (75%)         | 1,331,908       |
+| Max              | 1,872,926       |
+
+
+Dataset ini berisi 527 data harian harga emas dunia dalam Rupiah Indonesia (IDR), dari April 2023 hingga April 2025. Berikut adalah interpretasi dari statistik deskriptifnya:
+1. Rata-rata (Mean): Harga penutupan emas berada di kisaran Rp1.178.196, yang mencerminkan tren umum selama dua tahun terakhir.
+2. Standar Deviasi (Std Dev): Sebesar Rp217.310, menunjukkan adanya fluktuasi yang cukup signifikan (~18%), wajar untuk instrumen komoditas seperti emas.
+3. Harga Minimum: Harga terendah tercatat sebesar Rp912.144, kemungkinan saat terjadi penurunan pasar.
+4. Harga Maksimum: Harga tertinggi mencapai Rp1.872.926, menunjukkan adanya lonjakan kuat di waktu tertentu.
+5. Kuartil:
+     - Q1 (25%): 25% data berada di bawah Rp975.623
+     - Median (50%): Titik tengah berada di Rp1.201.496, sedikit lebih tinggi dari rata-rata.
+     - Q3 (75%): 75% data berada di bawah Rp1.331.908
+6. Distribusi harga terlihat sedikit condong ke kanan (right-skewed), namun tetap relatif seimbang. Ini baik untuk modeling karena tidak terlalu ekstrem.
+
 Visualisasi awal yang dilakukan:
 - Plot tren harga emas IDR sepanjang 2 tahun
 - Korelasi antara harga pembukaan, tertinggi, terendah, dan penutupan
 - Seasonal decomposition (optional)
+
+  
 ## Data Preparation
 
 Data preparation dilakukan dalam beberapa tahapan:
