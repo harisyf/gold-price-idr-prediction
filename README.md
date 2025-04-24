@@ -71,6 +71,7 @@ Dataset mencakup kolom-kolom berikut (berdasarkan struktur umumnya dari Investin
 Namun yang digunakan pada proyek ini yaitu 'Tanggal' dan 'Terakhir'
 
 
+
 ## Data Preparation
 
 Data preparation dilakukan dalam beberapa tahapan:
@@ -79,6 +80,8 @@ Data preparation dilakukan dalam beberapa tahapan:
    - Menghilangkan kolom yang tidak diperlukan
    - Mengubah format tanggal menjadi datetime
    - Mengurutkan data berdasarkan tanggal
+  
+     
   
 2. **Feature Engineering**  
    - Mengubah data menjadi bentuk window sequences untuk input ke LSTM dan GRU
@@ -222,3 +225,118 @@ Hasil evaluasi:
 
 Model dengan RMSE dan MAE paling rendah dipilih sebagai model terbaik. Hasil prediksi juga divisualisasikan dalam bentuk:
 - Plot harga aktual vs harga prediksi
+
+### **Kesimpulan Evaluasi Model**
+Secara keseluruhan, performa LSTM dalam eksperimen ini **kurang baik dibandingkan GRU**. Sehingga model yang dipilih pada proyek ini yaitu:
+
+***MODEL GRU***
+
+## **Prediction**
+
+Setelah melalui proses pelatihan dan evaluasi terhadap dua arsitektur model, yaitu GRU dan LSTM, model **GRU dipilih sebagai model terbaik** berdasarkan nilai error yang lebih rendah serta kemampuannya dalam mengikuti tren harga emas dengan lebih akurat.
+
+Pada bagian ini, model GRU yang telah dilatih akan digunakan untuk melakukan **prediksi harga emas selama 30 hari ke depan**. Proses prediksi dilakukan secara bertahap dengan menggunakan pendekatan rekursif, di mana prediksi sebelumnya akan digunakan sebagai input untuk memprediksi hari berikutnya. Hasil prediksi akan ditampilkan dalam bentuk grafik serta diringkas dalam bentuk statistik untuk memberikan gambaran tren harga emas dalam waktu dekat.
+
+### **Prediksi Harga Emas 30 Hari ke Depan**
+
+Untuk melakukan prediksi harga emas 30 hari ke depan, digunakan fungsi `forecast_future()` yang bekerja secara **rekursif**.  
+Artinya, prediksi untuk hari ke-1 digunakan sebagai input untuk memprediksi hari ke-2, dan seterusnya hingga jumlah hari yang diinginkan (dalam hal ini 30 hari).
+
+Berikut langkah-langkah yang dilakukan:
+
+1. **Mengambil urutan terakhir** dari data historis sebagai input awal untuk prediksi.
+2. Menggunakan model GRU yang telah dilatih untuk memprediksi satu hari ke depan, lalu memasukkan hasil prediksi tersebut sebagai bagian dari input selanjutnya.
+3. Proses ini diulang sebanyak 30 kali untuk membentuk prediksi berurutan selama 30 hari.
+4. Hasil prediksi yang masih dalam bentuk ter-normalisasi dikembalikan ke skala IDR asli menggunakan `inverse_transform()`.
+5. Grafik dibuat untuk menampilkan:
+   - Harga historis 60 hari terakhir
+   - Hasil prediksi harga emas selama 30 hari ke depan
+
+Selain visualisasi, dicetak juga ringkasan statistik dari hasil prediksi:
+- Harga terakhir (day-30)
+- Nilai minimum, maksimum, dan rata-rata dari prediksi
+
+
+### Grafik Prediksi Harga Emas
+
+### **Interpretasi Grafik Prediksi**
+
+Grafik di atas menunjukkan hasil prediksi harga emas selama 30 hari ke depan (garis merah putus-putus) dibandingkan dengan tren historis 60 hari terakhir (garis biru).
+
+Terlihat bahwa model GRU memproyeksikan tren harga emas cenderung **stabil naik** dengan kenaikan yang lebih moderat dibandingkan fluktuasi tajam di masa lalu. Model menangkap arah tren secara umum namun tidak terlalu agresif dalam mengikuti pola lonjakan harga yang ekstrem.
+
+Prediksi ini dapat memberikan gambaran awal bagi investor atau pengambil keputusan untuk mengantisipasi pergerakan harga dalam waktu dekat.
+
+#### 30-Day Gold Price Forecast
+
+---
+
+**Forecast Period:**
+- **Start Index:** 527  
+- **End Index:** 556
+
+---
+
+**GRU Forecast (Last Day):**  
+1859472.38 IDR
+
+---
+
+**GRU Forecast Summary:**
+- **Min:** 1,841,465.75 IDR  
+- **Max:** 1,859,472.38 IDR  
+- **Mean:** 1,850,020.75 IDR
+
+---
+
+### Forecast Data Preview:
+
+| Index | GRU_Forecast   |
+|-------|----------------|
+| 527   | 1,845,663.125  |
+| 528   | 1,841,963.750  |
+| 529   | 1,841,465.750  |
+| 530   | 1,841,749.500  |
+| 531   | 1,842,222.250  |
+
+**Interpretasi Tabel Hasil Prediksi**
+
+Tabel di atas menampilkan hasil prediksi harga emas selama 30 hari ke depan yang dihasilkan oleh model GRU. Setiap baris merepresentasikan nilai prediksi untuk satu hari ke depan berdasarkan indeks waktu yang berurutan.
+
+Berikut beberapa ringkasan statistik dari hasil prediksi:
+
+- **Harga prediksi pada hari ke-30**: Rp 1.859.472,38
+- **Harga maksimum selama 30 hari**: Rp 1.859.472,38
+- **Harga minimum selama 30 hari**: Rp 1.841.465,75
+- **Rata-rata prediksi**: Rp 1.850.020,75
+
+Rentang harga yang relatif sempit menunjukkan bahwa model memproyeksikan **stabilitas harga** dalam jangka pendek. Tidak ada lonjakan atau penurunan tajam yang terdeteksi, sehingga proyeksi ini dapat digunakan sebagai dasar awal untuk pengambilan keputusan yang bersifat konservatif.
+
+## Kesimpulan
+
+Dalam proyek ini, dilakukan proses prediksi harga emas global dalam IDR menggunakan dua jenis model deep learning untuk data deret waktu, yaitu **LSTM** dan **GRU**. Berikut adalah poin-poin utama dari hasil yang diperoleh:
+
+1. **Data Preparation dan Normalisasi**  
+   Data harga emas dari 24 April 2023 hingga 22 April 2025 diproses dan dinormalisasi untuk memastikan stabilitas dan efisiensi dalam pelatihan model.
+
+2. **Model Building dan Training**  
+   Dua arsitektur model dibangun dan dilatih menggunakan data historis:
+   - LSTM: mampu mengikuti tren secara umum, namun menghasilkan error yang lebih besar.
+   - GRU: memberikan hasil prediksi yang lebih akurat dan efisien, serta lebih baik dalam mengikuti pola harga emas.
+
+3. **Evaluasi Model**  
+   Berdasarkan metrik evaluasi:
+   - **GRU**: RMSE = 20.821, MAE = 15.176
+   - **LSTM**: RMSE = 41.024, MAE = 28.934  
+   Dengan hasil tersebut, **model GRU dinyatakan sebagai model terbaik** untuk digunakan dalam prediksi harga emas selanjutnya.
+
+4. **Prediksi 30 Hari ke Depan**  
+   Model GRU digunakan untuk memprediksi harga emas selama 30 hari ke depan. Hasilnya menunjukkan tren harga yang cenderung stabil dan naik secara moderat, dengan nilai rata-rata prediksi sebesar **Rp 1.850.020,75**.
+
+**Final Insight**
+
+Model GRU berhasil menunjukkan performa yang solid dalam memprediksi harga emas dan dapat digunakan sebagai dasar analisis untuk keputusan finansial dalam jangka pendek. Namun, untuk aplikasi di dunia nyata, disarankan untuk mempertimbangkan faktor eksternal lain seperti nilai tukar, inflasi, dan sentimen global untuk prediksi yang lebih komprehensif.
+
+
+
+
