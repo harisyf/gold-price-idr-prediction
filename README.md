@@ -1,19 +1,45 @@
 # Machine Learning Project Report - Haris Yafie
 
-A project for my submission of my learning in Dicoding Machine Learning Terapan course. This project is about prediction on global gold price to IDR. The data used spans from 24 April 2023 until 22 April 2025.
+Proyek untuk pembelajaran saya dalam kursus Dicoding Machine Learning Terapan. Proyek ini tentang prediksi harga emas dunia terhadap IDR. Data yang digunakan berkisar dari 24 April 2023 hingga 22 April 2025.
+
+ID Dicoding: harisyafie
+
+Email: yafie345@gmail.com
 
 ## Global Gold Price to IDR Prediction
 
-Harga emas dunia merupakan salah satu aset yang banyak digunakan sebagai lindung nilai terhadap inflasi dan ketidakstabilan ekonomi global. Di Indonesia, pergerakan harga emas dalam Rupiah (IDR) sangat dipengaruhi oleh dinamika global seperti kebijakan moneter, fluktuasi kurs, dan krisis ekonomi dunia.
+Emas merupakan logam mulia yang memiliki berbagai bentuk dan fungsi. Selain digunakan untuk perhiasan, emas juga sering dijadikan sebagai salah satu instrumen investasi yang populer. Investasi emas tergolong sebagai investasi dengan risiko menengah (*middle risk*), yang menjadikannya sebagai pilihan yang relatif aman namun tetap menjanjikan keuntungan (Fachruddin, 2019).
 
-Namun, memprediksi harga emas terhadap IDR bukanlah hal yang mudah karena sifatnya yang sangat volatil dan dipengaruhi oleh berbagai variabel eksternal. Oleh karena itu, proyek ini bertujuan membangun model machine learning berbasis time series yang dapat memprediksi harga emas dalam IDR secara akurat, dengan memanfaatkan data historis.
+Secara global, harga emas dihitung menggunakan satuan *troy ounce (Oz)* yang setara dengan 31,1034 gram. Seperti instrumen investasi lainnya, harga emas bersifat fluktuatif dari waktu ke waktu, meskipun secara jangka panjang cenderung mengalami kenaikan. Beberapa faktor utama yang memengaruhi harga emas antara lain:
 
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Masalah ini penting untuk diselesaikan karena dapat membantu individu, pelaku pasar, dan investor dalam membuat keputusan keuangan yang lebih terinformasi.
-- Referensi:
-  - [World Gold Council - Gold Market Insights](https://www.gold.org/)
-  - [IMF Global Economic Outlook](https://www.imf.org/)
-  - [Investing.com - GAU/IDR](https://id.investing.com/currencies/gau-idr-historical-data)
+1. **Ketidakpastian Global**  
+   Peristiwa politik, ekonomi, krisis, resesi, hingga perang sering memicu kenaikan harga emas, karena investor menganggap emas sebagai aset lindung nilai (*safe haven*).
+
+2. **Penawaran dan Permintaan**  
+   Ketika permintaan lebih tinggi dari penawaran, harga emas akan naik, dan sebaliknya.
+
+3. **Kebijakan Moneter The Fed (AS)**  
+   Penurunan suku bunga oleh The Fed cenderung mendorong investor untuk beralih ke emas, sehingga harga emas naik.
+
+4. **Inflasi**  
+   Semakin tinggi inflasi, harga emas biasanya ikut naik karena nilai uang fiat menurun.
+
+5. **Nilai Tukar Dolar Amerika Serikat (USD)**  
+   Harga emas global dikonversi ke IDR berdasarkan kurs USD. Jika Rupiah melemah terhadap USD, maka harga emas lokal akan meningkat.
+
+---
+
+### Mengapa Prediksi Harga Emas Penting?
+
+Prediksi harga emas menjadi penting karena dapat membantu investor dalam menentukan waktu yang tepat untuk membeli atau menjual emas. Dengan menggunakan model prediksi yang efektif, seperti LSTM dan GRU Neural Network, kita dapat memahami pola pergerakan harga emas dan memberikan estimasi yang akurat terhadap harga di masa mendatang. Hal ini akan membantu meningkatkan kualitas pengambilan keputusan dalam berinvestasi emas, terutama dalam situasi ekonomi yang tidak pasti.
+
+**Referensi:**  
+
+- Fachruddin, M. A. (2019). *Implementasi Metode Elman Recurrent Neural Network (ERNN) Untuk Prediksi Harga Emas*. Thesis, Universitas Islam Negeri Sultan Syarif Kasim, Riau.  
+- World Gold Council. (n.d.). *Gold Market Insights*. Retrieved from [https://www.gold.org/](https://www.gold.org/)
+- International Monetary Fund. (n.d.). *Global Economic Outlook*. Retrieved from [https://www.imf.org/](https://www.imf.org/)
+- Investing.com. (n.d.). *GAU/IDR Historical Data*. Retrieved from [https://id.investing.com/currencies/gau-idr-historical-data](https://id.investing.com/currencies/gau-idr-historical-data)
+
 
 ## Business Understanding
 
@@ -33,7 +59,7 @@ Namun, memprediksi harga emas terhadap IDR bukanlah hal yang mudah karena sifatn
 
 ## Data Understanding
 
-Data yang digunakan dalam proyek ini diambil dari [Investing.com - GAU/IDR](https://id.investing.com/currencies/gau-idr-historical-data), mencakup periode 24 April 2023 hingga 22 April 2025. Data ini merepresentasikan harga emas dunia yang dikonversikan ke dalam Rupiah Indonesia (IDR).
+Data yang digunakan dalam proyek ini diperoleh dari [Investing.com - GAU/IDR](https://id.investing.com/currencies/gau-idr-historical-data), mencakup periode 24 April 2023 hingga 22 April 2025. Data ini merepresentasikan harga emas dunia yang dikonversikan ke dalam Rupiah Indonesia (IDR).
 
 Dataset mencakup kolom-kolom berikut (berdasarkan struktur umumnya dari Investing.com):
 - Tanggal: tanggal pengamatan
@@ -44,20 +70,62 @@ Dataset mencakup kolom-kolom berikut (berdasarkan struktur umumnya dari Investin
 - Change %: persentase perubahan harga
 Namun yang digunakan pada proyek ini yaitu 'Tanggal' dan 'Terakhir'
 
-**Exploratory Data Analysis**:
-**Statistika Deskriptif**
-### 📊 Descriptive Statistics for Closing Gold Price (IDR)
+
+## Data Preparation
+
+Data preparation dilakukan dalam beberapa tahapan:
+
+1. **Data Cleaning**  
+   - Menghilangkan kolom yang tidak diperlukan
+   - Mengubah format tanggal menjadi datetime
+   - Mengurutkan data berdasarkan tanggal
+  
+2. **Feature Engineering**  
+   - Mengubah data menjadi bentuk window sequences untuk input ke LSTM dan GRU
+
+3. **Scaling**  
+   - MinMaxScaler digunakan untuk menskalakan harga agar sesuai dengan input layer model neural network
+Langkah penting yang dilakukan adalah **Data Scaling**. Pada proyek ini, kolom `Terakhir` (harga emas harian) dinormalisasi menggunakan `MinMaxScaler` agar berada dalam rentang **0 hingga 1**.
+
+    Tujuan dari scaling ini adalah:
+    
+    - **Menstabilkan proses pelatihan model**  
+      Nilai harga emas dalam IDR bisa mencapai ratusan ribu hingga jutaan. Jika langsung dimasukkan ke model tanpa normalisasi, nilai yang besar dapat membuat proses training tidak stabil dan memperlambat konvergensi.
+    
+    - **Mempercepat konvergensi model**  
+      Model deep learning (seperti LSTM/GRU) lebih cepat belajar jika nilai input berada dalam skala yang konsisten.
+    
+    - **Mengoptimalkan fungsi aktivasi**  
+      Fungsi aktivasi seperti `tanh` dan `sigmoid` bekerja paling optimal jika input berada dalam kisaran yang kecil (biasanya antara -1 hingga 1 atau 0 hingga 1).
+    
+    - **Fokus pada pola, bukan skala**  
+      Dengan normalisasi, model dapat lebih fokus pada pola pergerakan harga (naik/turun) daripada nilai absolut harga emas.
+    
+    Oleh karena itu, normalisasi menjadi tahap penting agar model dapat mempelajari tren dengan lebih efisien dan akurat.
+
+4. **Splitting**  
+    Dalam pemodelan machine learning, membagi data menjadi data pelatihan (*training*) dan data pengujian (*testing*) merupakan langkah penting untuk mengukur kemampuan generalisasi model. Pada kasus prediksi deret waktu (time series), pembagian data dilakukan **berdasarkan urutan waktu** — bukan secara acak — agar struktur temporal dari data tetap terjaga.
+    
+    Dalam proyek ini, data historis harga emas yang telah dinormalisasi dibagi dengan proporsi:
+    - **80%** untuk data pelatihan (*training set*)
+    - **20%** untuk data pengujian (*test set*)
+    
+    Dengan pendekatan ini, model akan belajar dari pola harga di masa lalu (training) dan diuji menggunakan data masa depan yang belum pernah dilihat sebelumnya (testing). Hal ini memastikan bahwa proses evaluasi mencerminkan kemampuan model dalam memprediksi data baru secara realistis.
+
+## **Exploratory Data Analysis**:
+1. **Statistika Deskriptif**
+### Descriptive Statistics for Closing Gold Price (IDR)
 
 | Metric           | Value           |
 |------------------|-----------------|
 | Count            | 527             |
-| Mean             | 1,178,196       |
-| Std Dev          | 217,310         |
-| Min              | 912,144         |
-| Q1 (25%)         | 975,623         |
-| Median (50%)     | 1,201,496       |
-| Q3 (75%)         | 1,331,908       |
-| Max              | 1,872,926       |
+| Mean             | 1.178.196       |
+| Std Dev          | 217.310         |
+| Min              | 912.144         |
+| Q1 (25%)         | 975.623         |
+| Median (50%)     | 1.201.496       |
+| Q3 (75%)         | 1.331.908       |
+| Max              | 1.872.926       |
 
 
 Dataset ini berisi 527 data harian harga emas dunia dalam Rupiah Indonesia (IDR), dari April 2023 hingga April 2025. Berikut adalah interpretasi dari statistik deskriptifnya:
@@ -71,72 +139,86 @@ Dataset ini berisi 527 data harian harga emas dunia dalam Rupiah Indonesia (IDR)
      - Q3 (75%): 75% data berada di bawah Rp1.331.908
 6. Distribusi harga terlihat sedikit condong ke kanan (right-skewed), namun tetap relatif seimbang. Ini baik untuk modeling karena tidak terlalu ekstrem.
 
-Visualisasi awal yang dilakukan:
-- Plot tren harga emas IDR sepanjang 2 tahun
-- Korelasi antara harga pembukaan, tertinggi, terendah, dan penutupan
-- Seasonal decomposition (optional)
+2. **Data Visualization**
 
-  
-## Data Preparation
+Visualisasi yang dilakukan:
 
-Data preparation dilakukan dalam beberapa tahapan:
+Setelah melakukan analisis statistik deskriptif, langkah selanjutnya adalah membuat visualisasi data untuk mendapatkan pemahaman yang lebih mendalam.
+Visualisasi akan dilakukan menggunakan plot time series untuk melihat bagaimana tren harga emas berubah dari waktu ke waktu.
 
-1. **Data Cleaning**  
-   - Menghilangkan missing values
-   - Mengubah format tanggal menjadi datetime
-   - Mengubah kolom harga menjadi tipe numerik
+Dengan melihat visualisasi ini, kita dapat:
 
-2. **Feature Engineering**  
-   - Membuat fitur `price_diff` (perubahan harga harian)
-   - Membuat fitur `rolling_mean_7` dan `rolling_std_7` sebagai konteks jangka pendek
-   - Mengubah data menjadi bentuk window sequences untuk input ke LSTM dan GRU
+- Mengidentifikasi pola tren jangka panjang
+- Melihat fluktuasi atau volatilitas harga
+- Menemukan titik-titik ekstrem seperti lonjakan atau penurunan tajam
 
-3. **Scaling**  
-   - MinMaxScaler digunakan untuk menskalakan harga agar sesuai dengan input layer model neural network
+Visualisasi ini juga menjadi langkah awal yang penting sebelum membangun model prediksi berbasis data historis.
 
-4. **Splitting**  
-   - Data di-split menjadi training (80%) dan testing (20%) berdasarkan waktu (bukan random)
+**Line Plot – Harga Penutupan Emas dari Waktu ke Waktu**
 
-**Rubrik Tambahan**:
-- Penjelasan kenapa scaling dibutuhkan: input LSTM/GRU sensitif terhadap skala fitur
-- Transformasi menjadi windowed sequence sangat penting agar data bisa dipelajari sebagai urutan (sequence)
+Visualisasi ini menunjukkan tren harga emas dunia dalam Rupiah dari April 2023 hingga April 2025. Terlihat adanya:
+
+- Tren kenaikan secara bertahap
+- Beberapa lonjakan signifikan di akhir periode
+- Fluktuasi tetap ada, tapi tren jangka panjang meningkat
+
+**Boxplot – Distribusi Harga Emas per Bulan**
+
+Boxplot ini mengungkap:
+
+- Perbedaan harga antar bulan
+- Outlier di bulan tertentu
+- IQR makin besar di bulan akhir → volatilitas meningkat
+
+
 ## Modeling
 
-Model yang digunakan:
+Setelah data dipersiapkan, langkah selanjutnya adalah membangun arsitektur model deep learning untuk melakukan prediksi harga emas. Pada proyek ini, digunakan dua jenis model Recurrent Neural Network (RNN) yang populer untuk data deret waktu, yaitu **GRU (Gated Recurrent Unit)** dan **LSTM (Long Short-Term Memory)**.
 
-### 1. LSTM Neural Network
-- Arsitektur: 2 layer LSTM dengan dropout
-- Loss Function: MSE
-- Optimizer: Adam
-- Epochs: 50, batch size: 32
+### 1. GRU Neural Network
+- Dua layer GRU berurutan, dengan parameter `return_sequences=True` pada layer pertama agar output dapat diteruskan ke layer berikutnya.
+- Layer `Dropout` digunakan untuk mengurangi risiko overfitting dengan cara mengabaikan sejumlah unit selama pelatihan.
+- Layer output `Dense(1)` digunakan untuk menghasilkan prediksi harga pada 1 hari ke depan.
+- Aktivasi menggunakan aktivasi `tanh` karena menghasilkan output di rentang **-1 hingga 1**, cocok untuk data yang sudah diskalakan, dapat membantu menjaga **stabilitas memori** dalam proses sequence, dan efektif menangkap **pola positif dan negatif** dalam data time-series.
+- Model dikompilasi dengan **optimizer Adam**, fungsi loss **Mean Absolute Error (MAE)**, dan metrik evaluasi yang sama.
+- Epochs: 100, batch size: 32
+- Kelebihan: Lebih ringan dari LSTM, cocok untuk perangkat terbatas
+- Kekurangan: Mungkin tidak sekuat LSTM pada pola yang sangat kompleks
+
+**Summary Model GRU**
+
+
+
+### 2. LSTM Neural Network
+- Dua layer LSTM berurutan, dengan parameter `return_sequences=True` pada layer pertama agar output dapat diteruskan ke layer berikutnya.
+- Layer `Dropout` digunakan untuk mengurangi risiko overfitting dengan cara mengabaikan sejumlah unit selama pelatihan.
+- Layer output `Dense(1)` digunakan untuk menghasilkan prediksi harga pada 1 hari ke depan.
+- Aktivasi menggunakan aktivasi `tanh` karena menghasilkan output di rentang **-1 hingga 1**, cocok untuk data yang sudah diskalakan, dapat membantu menjaga **stabilitas memori** dalam proses sequence, dan efektif menangkap **pola positif dan negatif** dalam data time-series.
+- Model dikompilasi dengan **optimizer Adam**, fungsi loss **Mean Absolute Error (MAE)**, dan metrik evaluasi yang sama.
+- Epochs: 100, batch size: 32
 - Kelebihan: Cocok untuk time-series dengan pola panjang
 - Kekurangan: Waktu training relatif lama
 
-### 2. GRU Neural Network
-- Arsitektur: 2 layer GRU dengan dropout
-- Loss Function: MSE
-- Optimizer: Adam
-- Epochs: 50, batch size: 32
-- Kelebihan: Lebih ringan dari LSTM, cocok untuk perangkat terbatas
-- Kekurangan: Mungkin tidak sekuat LSTM pada pola yang sangat kompleks
+**Summary Model LSTM**
+
+
 
 Model terbaik dipilih berdasarkan performa pada data uji menggunakan metrik RMSE dan MAE.
 
 ## Evaluation
 
-Metrik yang digunakan:
-- **Root Mean Squared Error (RMSE)**:  
-  $\text{RMSE} = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2}$
-- **Mean Absolute Error (MAE)**:  
-  $\text{MAE} = \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i|$
+**Perhitungan metrik evaluasi**, yaitu:
+   - **MAE (Mean Absolute Error)**: rata-rata selisih absolut antara nilai aktual dan prediksi
 
+     $\text{MAE} = \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i|$
+   
+   - **RMSE (Root Mean Squared Error)**: menghitung error dengan penalti lebih besar terhadap prediksi yang jauh meleset
+
+     $\text{RMSE} = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2}$
+  
 Hasil evaluasi:
-- LSTM: RMSE = ..., MAE = ...
-- GRU: RMSE = ..., MAE = ...
+- GRU: RMSE = 20.821,06, MAE = 15.176,30
+- LSTM: RMSE = 41.024,68, MAE = 28.934,15
 
 Model dengan RMSE dan MAE paling rendah dipilih sebagai model terbaik. Hasil prediksi juga divisualisasikan dalam bentuk:
 - Plot harga aktual vs harga prediksi
-- Plot residual error
-
-**Rubrik Tambahan**:
-- Penjelasan formula metrik dan konteksnya dalam time-series regression
