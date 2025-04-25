@@ -69,11 +69,11 @@ Dataset mencakup kolom-kolom berikut (berdasarkan struktur umumnya dari Investin
 - Low: harga terendah dalam sehari
 - Change %: persentase perubahan harga
 
-![Dataset Awal](https://github.com/harisyf/gold-price-idr-prediction/blob/main/images/dataset.png)
+![Dataset Awal](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/dataset.png)
   
 Namun yang digunakan pada proyek ini yaitu 'Tanggal' dan 'Terakhir'
 
-![Dataset Final](https://github.com/harisyf/gold-price-idr-prediction/blob/main/images/dataset_final.png)
+![Dataset Final](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/dataset_final.png)
 
 ## Data Preparation
 
@@ -160,7 +160,7 @@ Visualisasi ini juga menjadi langkah awal yang penting sebelum membangun model p
 
 **Line Plot – Harga Penutupan Emas dari Waktu ke Waktu**
 
-![Line Plot Harga Emas Dunia](https://github.com/harisyf/gold-price-idr-prediction/blob/main/images/line-plot-gold-price.png)
+![Line Plot Harga Emas Dunia](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/line-plot-gold-price.png)
 
 Visualisasi ini menunjukkan tren harga emas dunia dalam Rupiah dari April 2023 hingga April 2025. Terlihat adanya:
 
@@ -170,7 +170,7 @@ Visualisasi ini menunjukkan tren harga emas dunia dalam Rupiah dari April 2023 h
 
 **Boxplot – Distribusi Harga Emas per Bulan**
 
-![Boxplot Distribusi Harga Emas per Bulan](https://github.com/harisyf/gold-price-idr-prediction/blob/main/images/box-plot-gold-price.png)
+![Boxplot Distribusi Harga Emas per Bulan](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/box-plot-gold-price.png)
 
 Boxplot ini mengungkap:
 
@@ -195,7 +195,7 @@ Setelah data dipersiapkan, langkah selanjutnya adalah membangun arsitektur model
 
 **Summary Model GRU**
 
-![Summary Model GRU](https://github.com/harisyf/gold-price-idr-prediction/blob/main/images/gru-model-summary.png)
+![Summary Model GRU](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/gru-model-summary.png)
 
 ### 2. LSTM Neural Network
 - Dua layer LSTM berurutan, dengan parameter `return_sequences=True` pada layer pertama agar output dapat diteruskan ke layer berikutnya.
@@ -209,7 +209,7 @@ Setelah data dipersiapkan, langkah selanjutnya adalah membangun arsitektur model
 
 **Summary Model LSTM**
 
-![Summary Model LSTM](https://github.com/harisyf/gold-price-idr-prediction/blob/main/images/lstm-model-summary.png)
+![Summary Model LSTM](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/lstm-model-summary.png)
 
 Model terbaik dipilih berdasarkan performa pada data uji menggunakan metrik RMSE dan MAE.
 
@@ -233,11 +233,11 @@ Model dengan RMSE dan MAE paling rendah dipilih sebagai model terbaik. Hasil pre
 
 **Plot Prediksi Harga Emas dengan GRU**
 
-![Plot Prediksi Harga Emas dengan GRU](https://github.com/harisyf/gold-price-idr-prediction/blob/main/images/gold-prediction-gru.png)
+![Plot Prediksi Harga Emas dengan GRU](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/gold-prediction-gru.png)
 
 **Plot Prediksi Harga Emas dengan LSTM**
 
-![Plot Prediksi Harga Emas dengan LSTM](https://github.com/harisyf/gold-price-idr-prediction/blob/main/images/gold-prediction-lstm.png)
+![Plot Prediksi Harga Emas dengan LSTM](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/gold-prediction-lstm.png)
 
 ### **Kesimpulan Evaluasi Model**
 Secara keseluruhan, performa LSTM dalam eksperimen ini **kurang baik dibandingkan GRU**. Sehingga model yang dipilih pada proyek ini yaitu:
@@ -272,7 +272,7 @@ Selain visualisasi, dicetak juga ringkasan statistik dari hasil prediksi:
 
 ### Grafik Prediksi Harga Emas
 
-![Plot Prediksi Harga Emas Selama 30 Hari ke Depan](https://github.com/harisyf/gold-price-idr-prediction/blob/main/images/30-day-forecast-gold.png)
+![Plot Prediksi Harga Emas Selama 30 Hari ke Depan](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/30-day-forecast-gold.png)
 
 ### **Interpretasi Grafik Prediksi**
 
