@@ -59,7 +59,7 @@ Prediksi harga emas menjadi penting karena dapat membantu investor dalam menentu
 
 ## Data Understanding
 
-Data yang digunakan dalam proyek ini diperoleh dari [Investing.com - GAU/IDR](https://id.investing.com/currencies/gau-idr-historical-data), mencakup periode 24 April 2023 hingga 22 April 2025. Data ini merepresentasikan harga emas dunia yang dikonversikan ke dalam Rupiah Indonesia (IDR).
+Data yang digunakan dalam proyek ini diperoleh dari [Investing.com - GAU/IDR](https://id.investing.com/currencies/gau-idr-historical-data), mencakup periode 24 April 2023 hingga 22 April 2025. Data ini merepresentasikan harga emas dunia yang dikonversikan ke dalam Rupiah Indonesia (IDR) per gram.
 
 Dataset mencakup kolom-kolom berikut (berdasarkan struktur umumnya dari Investing.com):
 - Tanggal: tanggal pengamatan
@@ -68,9 +68,12 @@ Dataset mencakup kolom-kolom berikut (berdasarkan struktur umumnya dari Investin
 - High: harga tertinggi dalam sehari
 - Low: harga terendah dalam sehari
 - Change %: persentase perubahan harga
+
+![Dataset Awal](https://github.com/harisyf/gold-price-idr-prediction/blob/main/images/dataset.png)
+  
 Namun yang digunakan pada proyek ini yaitu 'Tanggal' dan 'Terakhir'
 
-
+![Dataset Final](https://github.com/harisyf/gold-price-idr-prediction/blob/main/images/dataset_final.png)
 
 ## Data Preparation
 
@@ -80,8 +83,6 @@ Data preparation dilakukan dalam beberapa tahapan:
    - Menghilangkan kolom yang tidak diperlukan
    - Mengubah format tanggal menjadi datetime
    - Mengurutkan data berdasarkan tanggal
-  
-     
   
 2. **Feature Engineering**  
    - Mengubah data menjadi bentuk window sequences untuk input ke LSTM dan GRU
@@ -159,6 +160,8 @@ Visualisasi ini juga menjadi langkah awal yang penting sebelum membangun model p
 
 **Line Plot – Harga Penutupan Emas dari Waktu ke Waktu**
 
+![Line Plot Harga Emas Dunia](https://github.com/harisyf/gold-price-idr-prediction/blob/main/images/line-plot-gold-price.png)
+
 Visualisasi ini menunjukkan tren harga emas dunia dalam Rupiah dari April 2023 hingga April 2025. Terlihat adanya:
 
 - Tren kenaikan secara bertahap
@@ -166,6 +169,8 @@ Visualisasi ini menunjukkan tren harga emas dunia dalam Rupiah dari April 2023 h
 - Fluktuasi tetap ada, tapi tren jangka panjang meningkat
 
 **Boxplot – Distribusi Harga Emas per Bulan**
+
+![Boxplot Distribusi Harga Emas per Bulan](https://github.com/harisyf/gold-price-idr-prediction/blob/main/images/box-plot-gold-price.png)
 
 Boxplot ini mengungkap:
 
@@ -190,7 +195,7 @@ Setelah data dipersiapkan, langkah selanjutnya adalah membangun arsitektur model
 
 **Summary Model GRU**
 
-
+![Summary Model GRU](https://github.com/harisyf/gold-price-idr-prediction/blob/main/images/gru-model-summary.png)
 
 ### 2. LSTM Neural Network
 - Dua layer LSTM berurutan, dengan parameter `return_sequences=True` pada layer pertama agar output dapat diteruskan ke layer berikutnya.
@@ -204,7 +209,7 @@ Setelah data dipersiapkan, langkah selanjutnya adalah membangun arsitektur model
 
 **Summary Model LSTM**
 
-
+![Summary Model LSTM](https://github.com/harisyf/gold-price-idr-prediction/blob/main/images/lstm-model-summary.png)
 
 Model terbaik dipilih berdasarkan performa pada data uji menggunakan metrik RMSE dan MAE.
 
@@ -225,6 +230,14 @@ Hasil evaluasi:
 
 Model dengan RMSE dan MAE paling rendah dipilih sebagai model terbaik. Hasil prediksi juga divisualisasikan dalam bentuk:
 - Plot harga aktual vs harga prediksi
+
+**Plot Prediksi Harga Emas dengan GRU**
+
+![Plot Prediksi Harga Emas dengan GRU](https://github.com/harisyf/gold-price-idr-prediction/blob/main/images/gold-prediction-gru.png)
+
+**Plot Prediksi Harga Emas dengan LSTM**
+
+![Plot Prediksi Harga Emas dengan LSTM](https://github.com/harisyf/gold-price-idr-prediction/blob/main/images/gold-prediction-lstm.png)
 
 ### **Kesimpulan Evaluasi Model**
 Secara keseluruhan, performa LSTM dalam eksperimen ini **kurang baik dibandingkan GRU**. Sehingga model yang dipilih pada proyek ini yaitu:
@@ -259,6 +272,8 @@ Selain visualisasi, dicetak juga ringkasan statistik dari hasil prediksi:
 
 ### Grafik Prediksi Harga Emas
 
+![Plot Prediksi Harga Emas Selama 30 Hari ke Depan](https://github.com/harisyf/gold-price-idr-prediction/blob/main/images/30-day-forecast-gold.png)
+
 ### **Interpretasi Grafik Prediksi**
 
 Grafik di atas menunjukkan hasil prediksi harga emas selama 30 hari ke depan (garis merah putus-putus) dibandingkan dengan tren historis 60 hari terakhir (garis biru).
@@ -278,7 +293,7 @@ Prediksi ini dapat memberikan gambaran awal bagi investor atau pengambil keputus
 ---
 
 **GRU Forecast (Last Day):**  
-1859472.38 IDR
+1,859,472.38 IDR
 
 ---
 
@@ -291,13 +306,13 @@ Prediksi ini dapat memberikan gambaran awal bagi investor atau pengambil keputus
 
 ### Forecast Data Preview:
 
-| Index | GRU_Forecast   |
-|-------|----------------|
-| 527   | 1,845,663.125  |
-| 528   | 1,841,963.750  |
-| 529   | 1,841,465.750  |
-| 530   | 1,841,749.500  |
-| 531   | 1,842,222.250  |
+| Index | GRU_Forecast (IDR)   |
+|-------|----------------------|
+| 527   | 1,845,663.125        |
+| 528   | 1,841,963.750        |
+| 529   | 1,841,465.750        |
+| 530   | 1,841,749.500        |
+| 531   | 1,842,222.250        |
 
 **Interpretasi Tabel Hasil Prediksi**
 
