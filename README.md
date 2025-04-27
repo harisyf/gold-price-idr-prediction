@@ -6,6 +6,38 @@ ID Dicoding: harisyafie
 
 Email: yafie345@gmail.com
 
+# Table of Contents
+
+- [Global Gold Price to IDR Prediction](#global-gold-price-to-idr-prediction)
+- [Business Understanding](#business-understanding)
+- [Data Understanding](#data-understanding)
+  - [Data Collecting and Loading](#data-collecting-and-loading)
+  - [Data Checking](#data-checking)
+  - [Data Cleaning](#data-cleaning)
+  - [Exploratory Data Analysis](#exploratory-data-analysis)
+    - [Statistika Deskriptif](#statistika-deskriptif)
+    - [Data Visualization](#data-visualization)
+- [Data Preparation](#data-preparation)
+  - [Import Library Data Preparation](#import-library-data-preparation)
+  - [Data Scaling](#data-scaling)
+  - [Sequence Generation (Windowing)](#sequence-generation-windowing)
+  - [Data Train-Test Splitting](#data-train-test-splitting)
+- [Model Development](#model-development)
+  - [1. GRU Neural Network](#1-gru-neural-network)
+  - [2. LSTM Neural Network](#2-lstm-neural-network)
+- [Model Training](#model-training)
+- [Model Evaluation](#model-evaluation)
+  - [Interpretasi Hasil Evaluasi Model GRU](#interpretasi-hasil-evaluasi-model-gru)
+  - [Interpretasi Hasil Evaluasi Model LSTM](#interpretasi-hasil-evaluasi-model-lstm)
+  - [Kesimpulan Evaluasi Model](#kesimpulan-evaluasi-model)
+- [Prediction](#prediction)
+  - [Prediksi Harga Emas 30 Hari ke Depan](#prediksi-harga-emas-30-hari-ke-depan)
+    - [Grafik Prediksi Harga Emas](#grafik-prediksi-harga-emas)
+    - [Forecast Data Preview](#forecast-data-preview)
+    - [Interpretasi Tabel Hasil Prediksi](#interpretasi-tabel-hasil-prediksi)
+- [Kesimpulan](#kesimpulan)
+
+
 ## Global Gold Price to IDR Prediction
 
 Emas merupakan logam mulia yang memiliki berbagai bentuk dan fungsi. Selain digunakan untuk perhiasan, emas juga sering dijadikan sebagai salah satu instrumen investasi yang populer. Investasi emas tergolong sebagai investasi dengan risiko menengah (*middle risk*), yang menjadikannya sebagai pilihan yang relatif aman namun tetap menjanjikan keuntungan (Fachruddin, 2019).
