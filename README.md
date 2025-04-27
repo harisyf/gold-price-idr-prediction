@@ -44,13 +44,12 @@ Prediksi harga emas menjadi penting karena dapat membantu investor dalam menentu
 ## Business Understanding
 
 ### Problem Statements
-- Sulitnya memprediksi harga emas terhadap Rupiah karena tingginya volatilitas dan pengaruh faktor eksternal seperti kurs USD, inflasi global, dan ketegangan geopolitik.
-- Peningkatan permintaan terhadap emas yang menyebabkan kenaikan harga emas secara drastis
+1. Sulitnya memprediksi harga emas terhadap Rupiah karena tingginya volatilitas dan pengaruh faktor eksternal seperti kurs USD, inflasi global, dan ketegangan geopolitik.
+2. Peningkatan permintaan terhadap emas yang menyebabkan kenaikan harga emas secara drastis.
 
 ### Goals
-- Membangun model machine learning untuk memprediksi harga emas dalam IDR berdasarkan data historis.
-- Menggunakan pendekatan berbasis deep learning yang mampu memahami pola temporal dari pergerakan harga emas.
-- Membandingkan performa model LSTM dan GRU sebagai algoritma time-series terbaik untuk kasus ini.
+1. Membangun model machine learning untuk memprediksi harga emas dalam IDR secara akurat agar dapat membantu mengatasi ketidakpastian akibat volatilitas harga.
+2. Menganalisis tren permintaan emas melalui pola historis untuk memahami faktor-faktor yang mendorong kenaikan harga secara drastis.
 
 ### Solution Statements
 - Model 1: LSTM Neural Network — memanfaatkan kemampuan untuk mengingat pola jangka panjang pada data sekuensial.
@@ -59,66 +58,61 @@ Prediksi harga emas menjadi penting karena dapat membantu investor dalam menentu
 
 ## Data Understanding
 
-Data yang digunakan dalam proyek ini diperoleh dari [Investing.com - GAU/IDR](https://id.investing.com/currencies/gau-idr-historical-data), mencakup periode 24 April 2023 hingga 22 April 2025. Data ini merepresentasikan harga emas dunia yang dikonversikan ke dalam Rupiah Indonesia (IDR) per gram.
+Sebelum membangun model prediksi, penting untuk memahami terlebih dahulu karakteristik dataset yang digunakan. Pada tahap *data understanding*, dilakukan eksplorasi terhadap struktur data, kondisi kualitas data, serta pemahaman terhadap fitur-fitur yang tersedia.
 
-Dataset mencakup kolom-kolom berikut (berdasarkan struktur umumnya dari Investing.com):
-- Tanggal: tanggal pengamatan
-- Terakhir: harga terakhir emas pada hari tersebut
-- Open: harga pembukaan
-- High: harga tertinggi dalam sehari
-- Low: harga terendah dalam sehari
-- Change %: persentase perubahan harga
+Langkah ini bertujuan untuk memastikan bahwa data yang digunakan benar-benar representatif, relevan, dan siap untuk diproses lebih lanjut dalam tahap modeling. Selain itu, melalui pemahaman awal terhadap data, potensi masalah seperti missing values, outlier, atau duplikasi dapat diidentifikasi dan ditangani dengan tepat.
 
-![Dataset Awal](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/dataset.png)
-  
-Namun yang digunakan pada proyek ini yaitu 'Tanggal' dan 'Terakhir'
+### Data Collecting and Loading
 
-![Dataset Final](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/dataset_final.png)
+Data yang digunakan dalam proyek ini diperoleh dari Investing.com, dan dapat diakses melalui tautan berikut:  
+[Investing.com - GAU/IDR Historical Data](https://id.investing.com/currencies/gau-idr-historical-data)
 
-## Data Preparation
+Dataset yang digunakan mencakup periode **24 April 2023 hingga 22 April 2025**, dengan detail sebagai berikut:
 
-Data preparation dilakukan dalam beberapa tahapan:
+![Dataset Awal](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/dataset-new.png)
 
-1. **Data Cleaning**  
-   - Menghilangkan kolom yang tidak diperlukan
-   - Mengubah format tanggal menjadi datetime
-   - Mengurutkan data berdasarkan tanggal
-  
-2. **Feature Engineering**  
-   - Mengubah data menjadi bentuk window sequences untuk input ke LSTM dan GRU
+- **Jumlah Data**:  
+  - **527 baris** (record harian)  
+  - **7 kolom** (fitur)
+ 
+- **Fitur pada Dataset**:
+  - **Tanggal**: Tanggal pengamatan harga emas.
+  - **Terakhir**: Harga penutupan emas pada hari tersebut (IDR).
+  - **Pembukaan (Open)**: Harga pembukaan emas di hari tersebut.
+  - **Tertinggi (High)**: Harga tertinggi emas yang tercapai dalam sehari.
+  - **Terendah (Low)**: Harga terendah emas yang tercapai dalam sehari.
+  - **Vol. (Volume)**: Volume perdagangan emas dalam satuan transaksi.
+  - **Perubahan% (Change%)**: Persentase perubahan harga emas dibandingkan dengan hari sebelumnya.
 
-3. **Scaling**  
-   - MinMaxScaler digunakan untuk menskalakan harga agar sesuai dengan input layer model neural network
-Langkah penting yang dilakukan adalah **Data Scaling**. Pada proyek ini, kolom `Terakhir` (harga emas harian) dinormalisasi menggunakan `MinMaxScaler` agar berada dalam rentang **0 hingga 1**.
+### Data Checking
 
-    Tujuan dari scaling ini adalah:
-    
-    - **Menstabilkan proses pelatihan model**  
-      Nilai harga emas dalam IDR bisa mencapai ratusan ribu hingga jutaan. Jika langsung dimasukkan ke model tanpa normalisasi, nilai yang besar dapat membuat proses training tidak stabil dan memperlambat konvergensi.
-    
-    - **Mempercepat konvergensi model**  
-      Model deep learning (seperti LSTM/GRU) lebih cepat belajar jika nilai input berada dalam skala yang konsisten.
-    
-    - **Mengoptimalkan fungsi aktivasi**  
-      Fungsi aktivasi seperti `tanh` dan `sigmoid` bekerja paling optimal jika input berada dalam kisaran yang kecil (biasanya antara -1 hingga 1 atau 0 hingga 1).
-    
-    - **Fokus pada pola, bukan skala**  
-      Dengan normalisasi, model dapat lebih fokus pada pola pergerakan harga (naik/turun) daripada nilai absolut harga emas.
-    
-    Oleh karena itu, normalisasi menjadi tahap penting agar model dapat mempelajari tren dengan lebih efisien dan akurat.
+Setelah data dimuat, langkah selanjutnya adalah memeriksa kualitas data.
 
-4. **Splitting**  
-    Dalam pemodelan machine learning, membagi data menjadi data pelatihan (*training*) dan data pengujian (*testing*) merupakan langkah penting untuk mengukur kemampuan generalisasi model. Pada kasus prediksi deret waktu (time series), pembagian data dilakukan **berdasarkan urutan waktu** — bukan secara acak — agar struktur temporal dari data tetap terjaga.
-    
-    Dalam proyek ini, data historis harga emas yang telah dinormalisasi dibagi dengan proporsi:
-    - **80%** untuk data pelatihan (*training set*)
-    - **20%** untuk data pengujian (*test set*)
-    
-    Dengan pendekatan ini, model akan belajar dari pola harga di masa lalu (training) dan diuji menggunakan data masa depan yang belum pernah dilihat sebelumnya (testing). Hal ini memastikan bahwa proses evaluasi mencerminkan kemampuan model dalam memprediksi data baru secara realistis.
+Pertama, kita akan mengubah format kolom `'Tanggal'` menjadi format datetime untuk memastikan bahwa data dapat diurutkan dan diproses sebagai deret waktu (*time series*). Setelah itu, data akan diurutkan berdasarkan kolom `'Tanggal'` untuk menjaga urutan kronologis.
 
-## **Exploratory Data Analysis**:
-1. **Statistika Deskriptif**
-### Descriptive Statistics for Closing Gold Price (IDR)
+Selanjutnya, dilakukan pengecekan terhadap:
+- **Jumlah data** (baris dan kolom) untuk mengetahui ukuran dataset,
+- **Missing values** pada setiap kolom untuk mengidentifikasi apakah terdapat data yang hilang,
+- **Data duplikat** untuk memastikan tidak ada entri yang tercatat lebih dari satu kali,
+- **Outlier** pada kolom harga (`'Terakhir'`) menggunakan metode Interquartile Range (IQR), guna memahami apakah terdapat data yang ekstrem yang mungkin mempengaruhi analisis.
+
+Pengecekan kualitas data ini penting untuk memastikan bahwa dataset yang akan digunakan dalam modeling bersih, valid, dan representatif terhadap kondisi sebenarnya.
+
+![Dataset Quality Check](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/dataset-quality.png)
+
+- **Kondisi Data**:  
+  - **Missing Values**: Tidak ditemukan missing value pada kolom yang digunakan (`Tanggal`, `Terakhir`). Kolom lain (`Vol.`) ada beberapa missing values.
+  - **Duplikat**: Tidak ditemukan data duplikat.
+  - **Outlier**: Teridentifikasi terdapat 1 outlier harga, namun tidak dilakukan penghapusan karena merupakan bagian dari pergerakan harga riil.
+ 
+### Data Cleaning
+ 
+Lalu dilanjutkan dengan melakukan pembersihan data. Kita akan menghapus kolom `'Vol.'`, `'Pembukaan'`, `'Tertinggi'`, `'Terendah'`, dan `'Perubahan%'` karena kolom-kolom tersebut tidak digunakan dalam proses prediksi. Serta kolom `'Vol.'` juga terdapat missing values sehingga harus dikeluarkan dari dataset
+
+![Dataset Final](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/dataset-final-new.png)
+
+### **Exploratory Data Analysis**:
+   #### **Statistika Deskriptif**
 
 | Metric           | Value           |
 |------------------|-----------------|
@@ -143,7 +137,7 @@ Dataset ini berisi 527 data harian harga emas dunia dalam Rupiah Indonesia (IDR)
      - Q3 (75%): 75% data berada di bawah Rp1.331.908
 6. Distribusi harga terlihat sedikit condong ke kanan (right-skewed), namun tetap relatif seimbang. Ini baik untuk modeling karena tidak terlalu ekstrem.
 
-2. **Data Visualization**
+#### **Data Visualization**
 
 Visualisasi yang dilakukan:
 
@@ -178,12 +172,91 @@ Boxplot ini mengungkap:
 - Outlier di bulan tertentu
 - IQR makin besar di bulan akhir → volatilitas meningkat
 
+## Data Preparation
 
-## Modeling
+Setelah memahami karakteristik dan kondisi data, langkah berikutnya adalah melakukan tahapan *data preparation* untuk menyiapkan dataset agar siap digunakan dalam proses pelatihan model machine learning.
+
+Pada tahap ini, dilakukan beberapa proses penting seperti normalisasi data (*scaling*), pembentukan urutan (*sequence generation*), dan pembagian dataset menjadi data pelatihan dan pengujian (*train-test split*). Setiap tahapan dirancang untuk memastikan bahwa model dapat mempelajari pola data secara efektif dan menghasilkan prediksi yang akurat. Data preparation dilakukan dalam beberapa tahapan:
+
+### Import Library Data Preparation
+
+- `numpy`  
+  Digunakan untuk manipulasi data. `numpy` digunakan untuk operasi numerik dan array.
+
+- `sklearn.preprocessing.MinMaxScaler`  
+  Digunakan untuk melakukan **normalisasi** data harga emas ke rentang 0–1 sebelum dimasukkan ke dalam model.
+   
+### Data Scaling
+
+Langkah penting yang dilakukan adalah **Data Scaling**. Pada proyek ini, kolom `Terakhir` (harga emas harian) dinormalisasi menggunakan `MinMaxScaler` agar berada dalam rentang **0 hingga 1**.
+
+Tujuan dari scaling ini adalah:
+
+- **Menstabilkan proses pelatihan model**  
+  Nilai harga emas dalam IDR bisa mencapai ratusan ribu hingga jutaan. Jika langsung dimasukkan ke model tanpa normalisasi, nilai yang besar dapat membuat proses training tidak stabil dan memperlambat konvergensi.
+
+- **Mempercepat konvergensi model**  
+  Model deep learning (seperti LSTM/GRU) lebih cepat belajar jika nilai input berada dalam skala yang konsisten.
+
+- **Mengoptimalkan fungsi aktivasi**  
+  Fungsi aktivasi seperti `tanh` dan `sigmoid` bekerja paling optimal jika input berada dalam kisaran yang kecil (biasanya antara -1 hingga 1 atau 0 hingga 1).
+
+- **Fokus pada pola, bukan skala**  
+  Dengan normalisasi, model dapat lebih fokus pada pola pergerakan harga (naik/turun) daripada nilai absolut harga emas.
+
+Oleh karena itu, normalisasi menjadi tahap penting agar model dapat mempelajari tren dengan lebih efisien dan akurat.
+   
+### Sequence Generation (Windowing)
+
+Setelah data dinormalisasi, tahap selanjutnya adalah mengubah data historis harga emas menjadi bentuk **sequence** yang dapat diproses oleh model LSTM dan GRU.
+
+   Dalam masalah prediksi deret waktu (*time series*), model tidak hanya melihat nilai terakhir saja, tetapi juga perlu memahami pola perubahan harga dalam beberapa hari ke belakang. Untuk itu, dilakukan **pembentukan window sequence**, yaitu mengelompokkan data ke dalam blok-blok kecil sepanjang waktu.
+
+   Proses sequence generation dilakukan dengan teknik berikut:
+   - Menggunakan **30 data harga terakhir** sebagai input (X) untuk memprediksi harga **1 hari ke depan** (y).
+   - Membentuk pasangan input-output sebanyak mungkin dari seluruh dataset.
+   - Contohnya:
+     - Input: Harga emas dari hari ke-1 hingga hari ke-30
+     - Output: Harga emas pada hari ke-31
+     - Input berikutnya: Hari ke-2 hingga ke-31 → Prediksi hari ke-32, dst.
+   
+   Teknik ini bertujuan agar model dapat:
+   - **Mempelajari pola urutan harga** (misal: tren naik, pola naik-turun musiman)
+   - **Menghubungkan informasi historis** untuk memprediksi harga di masa depan
+   - **Mengadaptasi terhadap dinamika pasar** yang bersifat sekuensial dan berurutan
+
+   Sequence generation menjadi **fondasi utama** bagi model LSTM dan GRU, karena kedua arsitektur ini dirancang khusus untuk memproses data yang berbentuk urutan (*sequential data*). Tanpa pembentukan window sequences, model tidak akan mampu memahami dependensi jangka pendek maupun jangka panjang dari pergerakan harga emas.
+
+### Data Train-Test Splitting
+
+Dalam pemodelan machine learning, membagi data menjadi data pelatihan (*training*) dan data pengujian (*testing*) merupakan langkah penting untuk mengukur kemampuan generalisasi model. Pada kasus prediksi deret waktu (time series), pembagian data dilakukan **berdasarkan urutan waktu** — bukan secara acak — agar struktur temporal dari data tetap terjaga.
+
+Dalam proyek ini, data historis harga emas yang telah dinormalisasi dibagi dengan proporsi:
+- **80%** untuk data pelatihan (*training set*)
+- **20%** untuk data pengujian (*test set*)
+
+Dengan pendekatan ini, model akan belajar dari pola harga di masa lalu (training) dan diuji menggunakan data masa depan yang belum pernah dilihat sebelumnya (testing). Hal ini memastikan bahwa proses evaluasi mencerminkan kemampuan model dalam memprediksi data baru secara realistis.
+
+
+## Model Development
 
 Setelah data dipersiapkan, langkah selanjutnya adalah membangun arsitektur model deep learning untuk melakukan prediksi harga emas. Pada proyek ini, digunakan dua jenis model Recurrent Neural Network (RNN) yang populer untuk data deret waktu, yaitu **GRU (Gated Recurrent Unit)** dan **LSTM (Long Short-Term Memory)**.
 
 ### 1. GRU Neural Network
+
+GRU merupakan varian dari RNN yang dirancang untuk menangani masalah *vanishing gradient* dan memperbaiki performa pada data sekuensial jangka panjang. GRU menggunakan mekanisme gate sederhana namun efektif untuk mengontrol informasi yang mengalir dalam jaringan.
+
+**Cara Kerja GRU:**
+
+![GRU Workflow](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/gru-model-illustration.png)
+
+- **Update Gate**: Mengontrol seberapa banyak informasi dari masa lalu yang harus dipertahankan ke langkah saat ini.
+- **Reset Gate**: Mengontrol seberapa banyak informasi lama yang boleh dilupakan.
+- **Memori**: Kombinasi kedua gate ini membuat GRU dapat mempelajari ketergantungan jangka pendek maupun jangka panjang tanpa kehilangan informasi penting.
+- GRU lebih ringan dibanding LSTM karena hanya memiliki dua gate, sehingga lebih cepat dalam proses pelatihan.
+  
+  **Arsitektur GRU pada proyek ini:**
+  
 - Dua layer GRU berurutan, dengan parameter `return_sequences=True` pada layer pertama agar output dapat diteruskan ke layer berikutnya.
 - Layer `Dropout` digunakan untuk mengurangi risiko overfitting dengan cara mengabaikan sejumlah unit selama pelatihan.
 - Layer output `Dense(1)` digunakan untuk menghasilkan prediksi harga pada 1 hari ke depan.
@@ -198,6 +271,20 @@ Setelah data dipersiapkan, langkah selanjutnya adalah membangun arsitektur model
 ![Summary Model GRU](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/gru-model-summary.png)
 
 ### 2. LSTM Neural Network
+
+LSTM merupakan arsitektur RNN yang dikembangkan untuk mengatasi keterbatasan RNN standar dalam mengingat informasi jangka panjang. LSTM memperkenalkan konsep cell state dan mekanisme gate yang lebih kompleks untuk mengatur aliran informasi.
+
+**Cara Kerja LSTM:**
+
+![LSTM Workflow](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/lstm-model-illustration.jpg)
+
+- **Forget Gate**: Menentukan informasi mana yang akan dibuang dari cell state.
+- **Input Gate**: Menentukan informasi baru yang akan disimpan ke cell state.
+- **Output Gate**: Mengatur apa yang akan dikeluarkan dari cell state ke output jaringan.
+- **Cell State**: Bertindak seperti jalur utama informasi yang dimodifikasi sedikit di setiap langkah waktu, memungkinkan LSTM untuk mengingat informasi jangka panjang dengan stabil.
+
+**Arsitektur LSTM pada proyek ini:**
+
 - Dua layer LSTM berurutan, dengan parameter `return_sequences=True` pada layer pertama agar output dapat diteruskan ke layer berikutnya.
 - Layer `Dropout` digunakan untuk mengurangi risiko overfitting dengan cara mengabaikan sejumlah unit selama pelatihan.
 - Layer output `Dense(1)` digunakan untuk menghasilkan prediksi harga pada 1 hari ke depan.
@@ -213,7 +300,21 @@ Setelah data dipersiapkan, langkah selanjutnya adalah membangun arsitektur model
 
 Model terbaik dipilih berdasarkan performa pada data uji menggunakan metrik RMSE dan MAE.
 
-## Evaluation
+## Model Training
+
+Setelah model GRU dan LSTM berhasil dibangun dan diinisialisasi, langkah selanjutnya adalah melakukan proses **pelatihan (training)**. Pada tahap ini, model akan mempelajari pola historis dari harga emas berdasarkan data yang telah dibagi sebelumnya (training set).
+
+Model akan dilatih menggunakan fungsi `fit()`, dengan parameter sebagai berikut:
+- **Epochs**: jumlah iterasi pelatihan penuh terhadap seluruh data training.
+- **Batch size**: jumlah sampel yang digunakan sebelum parameter model diperbarui.
+- **Validation split**: sebagian kecil dari data training yang digunakan untuk mengevaluasi performa model selama pelatihan.
+
+Selama proses training, model akan menghitung loss dan metrik MAE (Mean Absolute Error) pada data pelatihan dan validasi untuk mengukur seberapa baik model belajar. Nilai-nilai ini dapat digunakan untuk memantau overfitting dan convergence model.
+
+Proses ini dilakukan secara terpisah untuk model GRU dan model LSTM, sehingga nantinya performa keduanya dapat dibandingkan secara objektif.
+
+
+## Model Evaluation
 
 **Perhitungan metrik evaluasi**, yaitu:
    - **MAE (Mean Absolute Error)**: rata-rata selisih absolut antara nilai aktual dan prediksi
@@ -223,24 +324,50 @@ Model terbaik dipilih berdasarkan performa pada data uji menggunakan metrik RMSE
    - **RMSE (Root Mean Squared Error)**: menghitung error dengan penalti lebih besar terhadap prediksi yang jauh meleset
 
      $\text{RMSE} = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2}$
-  
-Hasil evaluasi:
-- GRU: RMSE = 20.821,06, MAE = 15.176,30
-- LSTM: RMSE = 41.024,68, MAE = 28.934,15
 
-Model dengan RMSE dan MAE paling rendah dipilih sebagai model terbaik. Hasil prediksi juga divisualisasikan dalam bentuk:
-- Plot harga aktual vs harga prediksi
+
+Hasil evaluasi:
+- **GRU**: RMSE = 22.599, MAE = 17.412
+- **LSTM**: RMSE = 39.230, MAE = 27.721
+
+Model dengan RMSE dan MAE paling rendah dipilih sebagai model terbaik. Hasil prediksi juga divisualisasikan dalam bentuk plot harga aktual vs harga prediksi
+
+### **Interpretasi Hasil Evaluasi Model GRU**
 
 **Plot Prediksi Harga Emas dengan GRU**
 
-![Plot Prediksi Harga Emas dengan GRU](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/gold-prediction-gru.png)
+![Plot Prediksi Harga Emas dengan GRU](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/gold-pred-gru.png)
+
+Berdasarkan hasil evaluasi terhadap model GRU, diperoleh metrik sebagai berikut:
+
+- **RMSE (Root Mean Squared Error)**: 22.599,44
+- **MAE (Mean Absolute Error)**: 17.412,55
+
+Nilai MAE dan RMSE yang relatif rendah menunjukkan bahwa model GRU memiliki tingkat kesalahan yang kecil dalam memprediksi harga emas dibandingkan dengan nilai aktual. MAE mengukur rata-rata selisih absolut antara prediksi dan data aktual, sementara RMSE memberikan penalti lebih besar terhadap prediksi yang jauh meleset.
+
+Pada grafik di atas, terlihat bahwa **garis prediksi (orange)** berhasil mengikuti tren **garis aktual (biru)** dengan cukup baik. Model GRU mampu menangkap pola kenaikan harga emas secara umum, meskipun terdapat beberapa deviasi kecil terutama pada fluktuasi tajam.
+
+Secara keseluruhan, model GRU menunjukkan performa yang baik dan dapat diandalkan dalam memprediksi harga emas dalam IDR berdasarkan data historis. Hasil ini menjadi salah satu kandidat kuat untuk digunakan dalam prediksi 30 hari ke depan.
+
+### **Interpretasi Hasil Evaluasi Model LSTM**
 
 **Plot Prediksi Harga Emas dengan LSTM**
 
-![Plot Prediksi Harga Emas dengan LSTM](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/gold-prediction-lstm.png)
+![Plot Prediksi Harga Emas dengan LSTM](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/gold-pred-lstm.png)
+
+Berdasarkan hasil evaluasi terhadap model LSTM, diperoleh metrik sebagai berikut:
+
+- **RMSE (Root Mean Squared Error)**: 39.229,94
+- **MAE (Mean Absolute Error)**: 27.721,11
+
+Dibandingkan dengan GRU, model LSTM menghasilkan nilai error yang lebih tinggi, baik pada RMSE maupun MAE. Hal ini menunjukkan bahwa LSTM memiliki akurasi yang lebih rendah dalam memprediksi harga emas pada data uji.
+
+Dari grafik, terlihat bahwa garis prediksi model LSTM (orange) cenderung **lebih halus dan konservatif**, dan **kurang responsif terhadap perubahan tajam** pada tren harga aktual (biru). Model ini sedikit tertinggal dalam mengikuti kenaikan tajam harga emas yang terjadi pada periode akhir.
+
+Meskipun LSTM berhasil menangkap arah tren secara umum, ia cenderung menghasilkan prediksi yang terlalu rata pada periode volatil. Hal ini mengindikasikan bahwa model LSTM mungkin lebih cocok untuk data yang tidak terlalu fluktuatif, namun kurang optimal untuk kondisi pasar yang dinamis seperti pergerakan harga emas.
 
 ### **Kesimpulan Evaluasi Model**
-Secara keseluruhan, performa LSTM dalam eksperimen ini **kurang baik dibandingkan GRU**. Sehingga model yang dipilih pada proyek ini yaitu:
+Secara keseluruhan, performa LSTM dalam eksperimen ini **kurang baik dibandingkan GRU** dilihat berdasarkan nilai RMSE dan MAE serta garis tren prediksi pada plot prediction. Sehingga model yang dipilih pada proyek ini yaitu:
 
 ***MODEL GRU***
 
@@ -272,7 +399,7 @@ Selain visualisasi, dicetak juga ringkasan statistik dari hasil prediksi:
 
 ### Grafik Prediksi Harga Emas
 
-![Plot Prediksi Harga Emas Selama 30 Hari ke Depan](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/30-day-forecast-gold.png)
+![Plot Prediksi Harga Emas Selama 30 Hari ke Depan](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/gold-forecast-gru.png)
 
 ### **Interpretasi Grafik Prediksi**
 
@@ -287,32 +414,35 @@ Prediksi ini dapat memberikan gambaran awal bagi investor atau pengambil keputus
 ---
 
 **Forecast Period:**
-- **Start Index:** 527  
+- **Start Index:** 527
 - **End Index:** 556
 
 ---
 
-**GRU Forecast (Last Day):**  
-1,859,472.38 IDR
+**GRU Forecast (Last Day):**
+- 1.850.999,62 IDR
 
 ---
 
 **GRU Forecast Summary:**
-- **Min:** 1,841,465.75 IDR  
-- **Max:** 1,859,472.38 IDR  
-- **Mean:** 1,850,020.75 IDR
+- **Min:** 1.838.954,88 IDR
+- **Max:** 1.850.999,62 IDR
+- **Mean:** 1.843.954,00 IDR
 
 ---
 
 ### Forecast Data Preview:
 
-| Index | GRU_Forecast (IDR)   |
-|-------|----------------------|
-| 527   | 1,845,663.125        |
-| 528   | 1,841,963.750        |
-| 529   | 1,841,465.750        |
-| 530   | 1,841,749.500        |
-| 531   | 1,842,222.250        |
+| Index | GRU_Forecast (IDR) |
+|:-----:|:------------------:|
+| 527   | 1.845.125,625       |
+| 528   | 1.844.144,750       |
+| 529   | 1.841.061,125       |
+| 530   | 1.839.760,500       |
+| 531   | 1.839.237,000       |
+
+---
+
 
 **Interpretasi Tabel Hasil Prediksi**
 
@@ -320,10 +450,10 @@ Tabel di atas menampilkan hasil prediksi harga emas selama 30 hari ke depan yang
 
 Berikut beberapa ringkasan statistik dari hasil prediksi:
 
-- **Harga prediksi pada hari ke-30**: Rp 1.859.472,38
-- **Harga maksimum selama 30 hari**: Rp 1.859.472,38
-- **Harga minimum selama 30 hari**: Rp 1.841.465,75
-- **Rata-rata prediksi**: Rp 1.850.020,75
+- **Harga prediksi pada hari ke-30**: Rp 1.850.999,62
+- **Harga maksimum selama 30 hari**: Rp 1.850.999,62
+- **Harga minimum selama 30 hari**: Rp 1.838.954,88
+- **Rata-rata prediksi**: Rp 1.843.954,00
 
 Rentang harga yang relatif sempit menunjukkan bahwa model memproyeksikan **stabilitas harga** dalam jangka pendek. Tidak ada lonjakan atau penurunan tajam yang terdeteksi, sehingga proyeksi ini dapat digunakan sebagai dasar awal untuk pengambilan keputusan yang bersifat konservatif.
 
@@ -341,12 +471,12 @@ Dalam proyek ini, dilakukan proses prediksi harga emas global dalam IDR mengguna
 
 3. **Evaluasi Model**  
    Berdasarkan metrik evaluasi:
-   - **GRU**: RMSE = 20.821, MAE = 15.176
-   - **LSTM**: RMSE = 41.024, MAE = 28.934  
+   - **GRU**: RMSE = 22.599, MAE = 17.412
+   - **LSTM**: RMSE = 39.230, MAE = 27.721 
    Dengan hasil tersebut, **model GRU dinyatakan sebagai model terbaik** untuk digunakan dalam prediksi harga emas selanjutnya.
 
 4. **Prediksi 30 Hari ke Depan**  
-   Model GRU digunakan untuk memprediksi harga emas selama 30 hari ke depan. Hasilnya menunjukkan tren harga yang cenderung stabil dan naik secara moderat, dengan nilai rata-rata prediksi sebesar **Rp 1.850.020,75**.
+   Model GRU digunakan untuk memprediksi harga emas selama 30 hari ke depan. Hasilnya menunjukkan tren harga yang cenderung stabil dan naik secara moderat, dengan nilai rata-rata prediksi sebesar **Rp 1.843.954,00**.
 
 **Final Insight**
 
