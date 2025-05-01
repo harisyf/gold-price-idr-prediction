@@ -392,11 +392,6 @@ history_gru = model_gru.fit(
 ```
 
 **Berikut snippet code untuk model training LSTM**
-
-Selama proses training, model akan menghitung loss dan metrik MAE (Mean Absolute Error) pada data pelatihan dan validasi untuk mengukur seberapa baik model belajar. Nilai-nilai ini dapat digunakan untuk memantau overfitting dan convergence model.
-
-Proses ini dilakukan secara terpisah untuk model GRU dan model LSTM, sehingga nantinya performa keduanya dapat dibandingkan secara objektif.
-
 ```python
 history_lstm = model_lstm.fit(
     X_train, y_train,
@@ -406,6 +401,10 @@ history_lstm = model_lstm.fit(
     verbose=1
 )
 ```
+
+Selama proses training, model akan menghitung loss dan metrik MAE (Mean Absolute Error) pada data pelatihan dan validasi untuk mengukur seberapa baik model belajar. Nilai-nilai ini dapat digunakan untuk memantau overfitting dan convergence model.
+
+Proses ini dilakukan secara terpisah untuk model GRU dan model LSTM, sehingga nantinya performa keduanya dapat dibandingkan secara objektif.
 
 ## Model Evaluation
 
