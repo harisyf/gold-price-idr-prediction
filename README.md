@@ -13,12 +13,12 @@ Email: yafie345@gmail.com
 - [Data Understanding](#data-understanding)
   - [Data Collecting and Loading](#data-collecting-and-loading)
   - [Data Checking](#data-checking)
-  - [Data Cleaning](#data-cleaning)
   - [Exploratory Data Analysis](#exploratory-data-analysis)
     - [Statistika Deskriptif](#statistika-deskriptif)
     - [Data Visualization](#data-visualization)
 - [Data Preparation](#data-preparation)
   - [Import Library Data Preparation](#import-library-data-preparation)
+  - [Data Cleaning](#data-cleaning)
   - [Data Scaling](#data-scaling)
   - [Sequence Generation (Windowing)](#sequence-generation-windowing)
   - [Data Train-Test Splitting](#data-train-test-splitting)
@@ -136,12 +136,6 @@ Pengecekan kualitas data ini penting untuk memastikan bahwa dataset yang akan di
   - **Missing Values**: Tidak ditemukan missing value pada kolom yang digunakan (`Tanggal`, `Terakhir`). Kolom lain (`Vol.`) ada beberapa missing values.
   - **Duplikat**: Tidak ditemukan data duplikat.
   - **Outlier**: Teridentifikasi terdapat 1 outlier harga, namun tidak dilakukan penghapusan karena merupakan bagian dari pergerakan harga riil.
- 
-### Data Cleaning
- 
-Lalu dilanjutkan dengan melakukan pembersihan data. Kita akan menghapus kolom `'Vol.'`, `'Pembukaan'`, `'Tertinggi'`, `'Terendah'`, dan `'Perubahan%'` karena kolom-kolom tersebut tidak digunakan dalam proses prediksi. Serta kolom `'Vol.'` juga terdapat missing values sehingga harus dikeluarkan dari dataset
-
-![Dataset Final](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/dataset-final-new.png)
 
 ### **Exploratory Data Analysis**:
    #### **Statistika Deskriptif**
@@ -208,7 +202,7 @@ Boxplot ini mengungkap:
 
 Setelah memahami karakteristik dan kondisi data, langkah berikutnya adalah melakukan tahapan *data preparation* untuk menyiapkan dataset agar siap digunakan dalam proses pelatihan model machine learning.
 
-Pada tahap ini, dilakukan beberapa proses penting seperti normalisasi data (*scaling*), pembentukan urutan (*sequence generation*), dan pembagian dataset menjadi data pelatihan dan pengujian (*train-test split*). Setiap tahapan dirancang untuk memastikan bahwa model dapat mempelajari pola data secara efektif dan menghasilkan prediksi yang akurat. Data preparation dilakukan dalam beberapa tahapan:
+Pada tahap ini, dilakukan beberapa proses penting seperti data cleaning (drop fitur), normalisasi data (*scaling*), pembentukan urutan (*sequence generation*), dan pembagian dataset menjadi data pelatihan dan pengujian (*train-test split*). Setiap tahapan dirancang untuk memastikan bahwa model dapat mempelajari pola data secara efektif dan menghasilkan prediksi yang akurat. Data preparation dilakukan dalam beberapa tahapan:
 
 ### Import Library Data Preparation
 
@@ -217,6 +211,12 @@ Pada tahap ini, dilakukan beberapa proses penting seperti normalisasi data (*sca
 
 - `sklearn.preprocessing.MinMaxScaler`  
   Digunakan untuk melakukan **normalisasi** data harga emas ke rentang 0–1 sebelum dimasukkan ke dalam model.
+
+### Data Cleaning
+ 
+Lalu dilanjutkan dengan melakukan pembersihan data. Kita akan menghapus kolom `'Vol.'`, `'Pembukaan'`, `'Tertinggi'`, `'Terendah'`, dan `'Perubahan%'` karena kolom-kolom tersebut tidak digunakan dalam proses prediksi. Serta kolom `'Vol.'` juga terdapat missing values sehingga harus dikeluarkan dari dataset
+
+![Dataset Final](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/dataset-final-new.png)
    
 ### Data Scaling
 
@@ -294,9 +294,13 @@ GRU merupakan varian dari RNN yang dirancang untuk menangani masalah *vanishing 
 - Layer output `Dense(1)` digunakan untuk menghasilkan prediksi harga pada 1 hari ke depan.
 - Aktivasi menggunakan aktivasi `tanh` karena menghasilkan output di rentang **-1 hingga 1**, cocok untuk data yang sudah diskalakan, dapat membantu menjaga **stabilitas memori** dalam proses sequence, dan efektif menangkap **pola positif dan negatif** dalam data time-series.
 - Model dikompilasi dengan **optimizer Adam**, fungsi loss **Mean Absolute Error (MAE)**, dan metrik evaluasi yang sama.
-- Epochs: 100, batch size: 32
 - Kelebihan: Lebih ringan dari LSTM, cocok untuk perangkat terbatas
 - Kekurangan: Mungkin tidak sekuat LSTM pada pola yang sangat kompleks
+
+**Parameter Model yang Dibuat:**
+- **Units**: 32 neuron digunakan pada masing-masing layer LSTM/GRU
+- **Dropout Rate**: 0.1, digunakan untuk mencegah overfitting
+- **Learning Rate**: 0.001, diterapkan dalam optimizer Adam untuk mengontrol laju training
 
 **Summary Model GRU**
 
@@ -322,15 +326,44 @@ LSTM merupakan arsitektur RNN yang dikembangkan untuk mengatasi keterbatasan RNN
 - Layer output `Dense(1)` digunakan untuk menghasilkan prediksi harga pada 1 hari ke depan.
 - Aktivasi menggunakan aktivasi `tanh` karena menghasilkan output di rentang **-1 hingga 1**, cocok untuk data yang sudah diskalakan, dapat membantu menjaga **stabilitas memori** dalam proses sequence, dan efektif menangkap **pola positif dan negatif** dalam data time-series.
 - Model dikompilasi dengan **optimizer Adam**, fungsi loss **Mean Absolute Error (MAE)**, dan metrik evaluasi yang sama.
-- Epochs: 100, batch size: 32
 - Kelebihan: Cocok untuk time-series dengan pola panjang
 - Kekurangan: Waktu training relatif lama
+
+**Parameter Model yang Dibuat:**
+- **Units**: 32 neuron digunakan pada masing-masing layer LSTM/GRU
+- **Dropout Rate**: 0.1, digunakan untuk mencegah overfitting
+- **Learning Rate**: 0.001, diterapkan dalam optimizer Adam untuk mengontrol laju training
 
 **Summary Model LSTM**
 
 ![Summary Model LSTM](https://raw.githubusercontent.com/harisyf/gold-price-idr-prediction/main/images/lstm-model-summary.png)
 
 Model terbaik dipilih berdasarkan performa pada data uji menggunakan metrik RMSE dan MAE.
+
+**Berikut snippet code dari Model Building**
+```python
+def build(model_type, units=32, in_shape=(WIN, 1), dropout_rate=0.1, lr=0.001):
+    model = Sequential()
+
+    if model_type == 'LSTM':
+        model.add(LSTM(units, return_sequences=True, activation='tanh', input_shape=in_shape))
+        model.add(Dropout(dropout_rate))
+        model.add(LSTM(units, activation='tanh'))
+        model.add(Dropout(dropout_rate))
+
+    elif model_type == 'GRU':
+        model.add(GRU(units, return_sequences=True, activation='tanh', input_shape=in_shape))
+        model.add(Dropout(dropout_rate))
+        model.add(GRU(units, activation='tanh'))
+        model.add(Dropout(dropout_rate))
+
+    model.add(Dense(1))
+    model.compile(optimizer=keras.optimizers.Adam(learning_rate=lr),
+              loss='mae',
+              metrics=['mae'])
+
+    return model
+```
 
 ## Model Training
 
@@ -341,10 +374,38 @@ Model akan dilatih menggunakan fungsi `fit()`, dengan parameter sebagai berikut:
 - **Batch size**: jumlah sampel yang digunakan sebelum parameter model diperbarui.
 - **Validation split**: sebagian kecil dari data training yang digunakan untuk mengevaluasi performa model selama pelatihan.
 
+**Parameter Training Model:**
+- **Epochs**: 100
+- **Batch Size**: 32
+- **Validation Split**: 10% dari data training digunakan untuk validasi model
+
+**Berikut snippet code untuk model training GRU**
+
+```python
+history_gru = model_gru.fit(
+    X_train, y_train,
+    epochs=100,
+    batch_size=32,
+    validation_split=0.1,
+    verbose=1
+)
+```
+
+**Berikut snippet code untuk model training LSTM**
+
 Selama proses training, model akan menghitung loss dan metrik MAE (Mean Absolute Error) pada data pelatihan dan validasi untuk mengukur seberapa baik model belajar. Nilai-nilai ini dapat digunakan untuk memantau overfitting dan convergence model.
 
 Proses ini dilakukan secara terpisah untuk model GRU dan model LSTM, sehingga nantinya performa keduanya dapat dibandingkan secara objektif.
 
+```python
+history_lstm = model_lstm.fit(
+    X_train, y_train,
+    epochs=100,
+    batch_size=32,
+    validation_split=0.1,
+    verbose=1
+)
+```
 
 ## Model Evaluation
 
